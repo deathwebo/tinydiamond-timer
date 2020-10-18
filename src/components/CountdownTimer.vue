@@ -1,8 +1,12 @@
 <template>
-  <h1>{{ timeInFormat }}</h1>
-  <button @click="next">Next</button>
-  <button @click="startStopCountdown">{{ running ? "Stop" : "Start" }}</button>
-  <button @click="restartCountdown">Reset</button>
+  <span class="timer">{{ timeInFormat }}</span>
+  <div>
+    <button @click="next">Next</button>
+    <button @click="startStopCountdown">
+      {{ running ? "Stop" : "Start" }}
+    </button>
+    <button @click="restartCountdown">Reset</button>
+  </div>
 </template>
 
 <script>
@@ -61,3 +65,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.timer {
+  font-size: 4rem;
+}
+</style>
