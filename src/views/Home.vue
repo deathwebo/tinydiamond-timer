@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+    <h2>Add team members and start the timer</h2>
     <input
       v-model="newMember"
       placeholder="Add member"
@@ -32,7 +33,7 @@ export default {
   },
   created() {
     const membersStr = localStorage.getItem("members");
-    if (membersStr === "") {
+    if (membersStr == "" || membersStr == null) {
       return;
     }
     const members = membersStr.split(",");

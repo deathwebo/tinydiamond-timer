@@ -1,4 +1,4 @@
-# vue-test
+# Tiny Diamond Timer
 
 ## Project setup
 ```
