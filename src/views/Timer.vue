@@ -1,20 +1,26 @@
 <template>
-  <div class="timer">
-    <div class="side">
-      <ul>
+  <div class="timer flex">
+    <div class="text-gray-700 w-1/5">
+      <span class="font-bold text-black">Coming up next:</span>
+      <ul class="list-decimal">
         <li v-for="(item, idx) in remainingMembers" :key="item">
           {{ item }}<span v-if="idx == 0"> 👈</span>
         </li>
       </ul>
     </div>
 
-    <div class="main">
-      <h2>{{ currentMember }}</h2>
+    <div class="text-center w-4/5">
+      <div class="flex flex-col">
+        <span class="text-gray-500">It's your turn:</span>
+        <span class="text-2xl">{{ currentMember }}</span>
+      </div>
       <CountdownTimer
         ref="countdownTimer"
         @finished="timerFinishedHandler"
       ></CountdownTimer>
-      <ThisIsFine></ThisIsFine>
+      <div class="mt-6">
+        <ThisIsFine></ThisIsFine>
+      </div>
     </div>
   </div>
 </template>
@@ -69,19 +75,27 @@ export default {
     }
   },
   created() {
-    const membersStr = localStorage.getItem("members");
-    if (membersStr == null || membersStr == "") {
-      return;
-    }
-    const members = membersStr.split(",");
-    if (members.length > 0) {
-      shuffle(members);
-      this.members = members;
-    }
+    this.setupMembers();
   },
   methods: {
+    setupMembers() {
+      const membersStr = localStorage.getItem("members");
+      if (membersStr == null || membersStr == "") {
+        return;
+      }
+      const members = membersStr.split(",");
+      if (members.length > 0) {
+        shuffle(members);
+        this.members = members;
+      }
+    },
     timerFinishedHandler() {
       this.members.shift();
+      if (this.members.length == 0) {
+        this.setupMembers();
+        this.$refs.countdownTimer.startCountdown();
+        return;
+      }
       if (this.members.length > 0 && this.$refs.countdownTimer) {
         this.$refs.countdownTimer.startCountdown();
       }
@@ -89,18 +103,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.timer {
-  display: grid;
-  grid-template-columns: repeat(12, [col-start] 1fr);
-  grid-gap: 20px;
-}
-
-.side {
-  grid-column: col-start / span 2;
-}
-.main {
-  grid-column: col-start 3 / span 8;
-}
-</style>

@@ -1,11 +1,24 @@
 <template>
-  <span class="timer">{{ timeInFormat }}</span>
+  <span class="text-8xl" :class="textColorClass">{{ timeInFormat }}</span>
   <div>
-    <button @click="next">Next</button>
-    <button @click="startStopCountdown">
+    <button
+      class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded text-sm mr-1"
+      @click="next"
+    >
+      Next
+    </button>
+    <button
+      class="bg-gray-500 hover:bg-gray-700 text-white py-2 px-4 rounded text-sm mr-1"
+      @click="startStopCountdown"
+    >
       {{ running ? "Stop" : "Start" }}
     </button>
-    <button @click="restartCountdown">Reset</button>
+    <button
+      class="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded text-sm"
+      @click="restartCountdown"
+    >
+      Reset
+    </button>
   </div>
 </template>
 
@@ -27,6 +40,15 @@ export default {
       const secondsRaw = this.time - minutes * 60;
       const seconds = secondsRaw.toString().padStart(2, "0");
       return `${minutes}m ${seconds}s`;
+    },
+    textColorClass() {
+      if (this.time <= 10) {
+        return { "text-red-500": true };
+      } else if (this.time <= 30) {
+        return { "text-yellow-500": true };
+      } else {
+        return { "text-blue-700": true };
+      }
     }
   },
   methods: {
@@ -65,9 +87,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.timer {
-  font-size: 4rem;
-}
-</style>

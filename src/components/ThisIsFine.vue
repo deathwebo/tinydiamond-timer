@@ -118,20 +118,16 @@
   font-family: "Indie Flower", cursive;
 }
 #container {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  grid-auto-rows: minmax(5vh, auto);
   margin: 0 auto;
 }
 
 #thisIsFine {
   position: relative;
-  grid-column: 7/7;
-  grid-row: 2/3;
   background-color: #9be8d5;
   width: 500px;
   height: 300px;
   border: 2px solid black;
+  margin: auto;
 }
 #mirrorFrame {
   position: absolute;

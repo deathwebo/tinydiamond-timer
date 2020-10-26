@@ -1,21 +1,53 @@
 <template>
-  <div class="home">
-    <h2>Add team members and start the timer</h2>
-    <input
-      v-model="newMember"
-      placeholder="Add member"
-      v-on:keyup="validateEnter"
-    />
-    <button @click="addNewMember">Add</button>
+  <div class="home text-center text-xl">
+    <div class="mb-6">
+      <p class="text-gray-700">Add team members and start the timer</p>
+      <div class="inline-flex items-center border-b border-teal-500 py-2">
+        <input
+          class="appearance-none bg-transparent border-none text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
+          type="text"
+          v-model="newMember"
+          v-on:keyup="validateEnter"
+          placeholder="Add member"
+          aria-label="Full name"
+        />
+        <button
+          @click="addNewMember"
+          class="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded"
+          type="button"
+        >
+          Add
+        </button>
+        <button
+          class="flex-shrink-0 border-transparent border-4 text-teal-500 hover:text-teal-800 text-sm py-1 px-2 rounded"
+          type="button"
+        >
+          Clear
+        </button>
+      </div>
+    </div>
 
-    <p>{{ members.length }} team members:</p>
-    <ul id="array-rendering">
-      <li v-for="item in members" :key="item">
-        {{ item }} <button @click="deleteMember(item)">X</button>
-      </li>
-    </ul>
+    <p class="text-gray-700">{{ members.length }} team members:</p>
+    <div class="mb-2">
+      <ul id="array-rendering" class="inline-block text-left">
+        <li v-for="item in members" :key="item">
+          <button
+            @click="deleteMember(item)"
+            class="text-sm text-red-500 text-bold"
+          >
+            X
+          </button>
+          {{ item }}
+        </li>
+      </ul>
+    </div>
 
-    <button @click="startTimer">Continue</button>
+    <button
+      @click="startTimer"
+      class="bg-blue-500 hover:bg-blue-700 text-white text-sm py-2 px-4 rounded"
+    >
+      Start the timer
+    </button>
   </div>
 </template>
 
