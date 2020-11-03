@@ -11,29 +11,34 @@
 
     <div class="text-center w-3/5">
       <div class="bg-white shadow overflow-hidden sm:rounded-lg py-4">
-        <div class="flex flex-col" v-if="timerRunning">
-          <span class="text-gray-500">It's your turn:</span>
-          <span class="text-2xl">{{ currentMember }}</span>
+        <div v-if="noMembers">
+          <span class="text-2xl">Add members to start using the timer</span>
         </div>
-        <CountdownTimer
-          v-if="timerRunning"
-          :timer-duration="timerDuration"
-          ref="countdownTimer"
-          @finished="timerFinishedHandler"
-        ></CountdownTimer>
+        <div v-else>
+          <div class="flex flex-col" v-if="timerRunning">
+            <span class="text-gray-500">It's your turn:</span>
+            <span class="text-2xl">{{ currentMember }}</span>
+          </div>
+          <CountdownTimer
+            v-if="timerRunning"
+            :timer-duration="timerDuration"
+            ref="countdownTimer"
+            @finished="timerFinishedHandler"
+          ></CountdownTimer>
 
-        <div class="flex flex-col" v-if="!timerRunning">
-          <span class="text-2xl font-hairline"
-            >Starting with
-            <span class="font-normal">{{ currentMember }}</span> in:</span
-          >
+          <div class="flex flex-col" v-if="!timerRunning">
+            <span class="text-2xl font-hairline"
+              >Starting with
+              <span class="font-normal">{{ currentMember }}</span> in:</span
+            >
+          </div>
+          <CountdownTimer
+            v-if="!timerRunning"
+            :timer-duration="5"
+            @finished="initialTimerFinished"
+            :display-controls="false"
+          ></CountdownTimer>
         </div>
-        <CountdownTimer
-          v-if="!timerRunning"
-          :timer-duration="5"
-          @finished="initialTimerFinished"
-          :display-controls="false"
-        ></CountdownTimer>
       </div>
       <div class="mt-6">
         <ThisIsFine></ThisIsFine>
@@ -80,6 +85,9 @@ export default {
     };
   },
   computed: {
+    noMembers() {
+      return this.members.length === 0;
+    },
     currentMember() {
       if (this.members.length > 0) {
         return this.members[0];
