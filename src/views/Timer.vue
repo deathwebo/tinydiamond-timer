@@ -16,6 +16,7 @@
           <span class="text-2xl">{{ currentMember }}</span>
         </div>
         <CountdownTimer
+          :timer-duration="timerDuration"
           ref="countdownTimer"
           @finished="timerFinishedHandler"
         ></CountdownTimer>
@@ -59,7 +60,8 @@ export default {
   },
   data() {
     return {
-      members: []
+      members: [],
+      timerDuration: 90
     };
   },
   computed: {
@@ -78,6 +80,10 @@ export default {
   },
   created() {
     this.setupMembers();
+    const timerDuration = parseInt(localStorage.getItem("timerDuration"));
+    if (Number.isInteger(timerDuration)) {
+      this.timerDuration = timerDuration;
+    }
   },
   methods: {
     setupMembers() {

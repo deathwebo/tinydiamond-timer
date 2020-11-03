@@ -29,6 +29,15 @@
             Clear
           </button>
         </div>
+        <div class="mt-4">
+          <span class="text-gray-500 mr-2">Duration per member in seconds</span>
+          <input
+            v-model="timerDuration"
+            type="number"
+            min="30"
+            class="appearance-none bg-transparent w-12"
+          />
+        </div>
       </div>
       <div class="flex-1 pl-6 text-left">
         <div
@@ -72,10 +81,16 @@ export default {
   data() {
     return {
       newMember: "",
-      members: []
+      members: [],
+      timerDuration: 90
     };
   },
   created() {
+    const timerDuration = parseInt(localStorage.getItem("timerDuration"));
+    if (Number.isInteger(timerDuration)) {
+      this.timerDuration = timerDuration;
+    }
+
     const membersStr = localStorage.getItem("members");
     if (membersStr == "" || membersStr == null) {
       return;
@@ -97,6 +112,7 @@ export default {
       this.members = filteredMembers;
     },
     startTimer() {
+      localStorage.setItem("timerDuration", this.timerDuration);
       localStorage.setItem("members", this.members);
       this.$router.push("timer");
     },
@@ -106,8 +122,5 @@ export default {
       }
     }
   }
-  // components: {
-  //   HelloWorld
-  // }
 };
 </script>

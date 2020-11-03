@@ -27,11 +27,16 @@ export default {
   name: "CountdownTimer",
   data() {
     return {
-      initialTime: 90,
       time: 0,
       timer: null,
       running: false
     };
+  },
+  props: {
+    timerDuration: {
+      type: Number,
+      default: 90
+    }
   },
   emits: ["finished"],
   computed: {
@@ -55,7 +60,7 @@ export default {
     startCountdown(restart = false) {
       this.running = true;
       if (!restart) {
-        this.time = this.initialTime;
+        this.time = this.timerDuration;
       }
       this.timer = setInterval(() => {
         this.time -= 1;
