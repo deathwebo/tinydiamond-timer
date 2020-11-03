@@ -11,14 +11,28 @@
 
     <div class="text-center w-3/5">
       <div class="bg-white shadow overflow-hidden sm:rounded-lg py-4">
-        <div class="flex flex-col">
+        <div class="flex flex-col" v-if="timerRunning">
           <span class="text-gray-500">It's your turn:</span>
           <span class="text-2xl">{{ currentMember }}</span>
         </div>
         <CountdownTimer
+          v-if="timerRunning"
           :timer-duration="timerDuration"
           ref="countdownTimer"
           @finished="timerFinishedHandler"
+        ></CountdownTimer>
+
+        <div class="flex flex-col" v-if="!timerRunning">
+          <span class="text-2xl font-hairline"
+            >Starting with
+            <span class="font-normal">{{ currentMember }}</span> in:</span
+          >
+        </div>
+        <CountdownTimer
+          v-if="!timerRunning"
+          :timer-duration="5"
+          @finished="initialTimerFinished"
+          :display-controls="false"
         ></CountdownTimer>
       </div>
       <div class="mt-6">
@@ -61,7 +75,8 @@ export default {
   data() {
     return {
       members: [],
-      timerDuration: 90
+      timerDuration: 90,
+      timerRunning: false
     };
   },
   computed: {
@@ -97,11 +112,14 @@ export default {
         this.members = members;
       }
     },
+    initialTimerFinished() {
+      this.timerRunning = true;
+    },
     timerFinishedHandler() {
       this.members.shift();
       if (this.members.length == 0) {
         this.setupMembers();
-        this.$refs.countdownTimer.startCountdown();
+        this.$refs.countdownTimer.resetTime();
         return;
       }
       if (this.members.length > 0 && this.$refs.countdownTimer) {
