@@ -1,23 +1,25 @@
 <template>
   <div class="timer flex">
-    <div class="text-gray-700 w-1/5">
+    <div class="text-gray-700 w-1/5 pl-4">
       <span class="font-bold text-black">Coming up next:</span>
-      <ul class="list-decimal">
+      <ul class="list-decimal pl-4">
         <li v-for="(item, idx) in remainingMembers" :key="item">
           {{ item }}<span v-if="idx == 0"> 👈</span>
         </li>
       </ul>
     </div>
 
-    <div class="text-center w-4/5">
-      <div class="flex flex-col">
-        <span class="text-gray-500">It's your turn:</span>
-        <span class="text-2xl">{{ currentMember }}</span>
+    <div class="text-center w-3/5">
+      <div class="bg-white shadow overflow-hidden sm:rounded-lg py-4">
+        <div class="flex flex-col">
+          <span class="text-gray-500">It's your turn:</span>
+          <span class="text-2xl">{{ currentMember }}</span>
+        </div>
+        <CountdownTimer
+          ref="countdownTimer"
+          @finished="timerFinishedHandler"
+        ></CountdownTimer>
       </div>
-      <CountdownTimer
-        ref="countdownTimer"
-        @finished="timerFinishedHandler"
-      ></CountdownTimer>
       <div class="mt-6">
         <ThisIsFine></ThisIsFine>
       </div>

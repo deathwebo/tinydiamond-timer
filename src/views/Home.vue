@@ -1,45 +1,57 @@
 <template>
   <div class="home text-center text-xl">
-    <div class="mb-6">
-      <p class="text-gray-700">Add team members and start the timer</p>
-      <div class="inline-flex items-center border-b border-teal-500 py-2">
-        <input
-          class="appearance-none bg-transparent border-none text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
-          type="text"
-          v-model="newMember"
-          v-on:keyup="validateEnter"
-          placeholder="Add member"
-          aria-label="Full name"
-        />
-        <button
-          @click="addNewMember"
-          class="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded"
-          type="button"
-        >
-          Add
-        </button>
-        <button
-          class="flex-shrink-0 border-transparent border-4 text-teal-500 hover:text-teal-800 text-sm py-1 px-2 rounded"
-          type="button"
-        >
-          Clear
-        </button>
-      </div>
-    </div>
+    <p class="text-gray-700 text-2xl mb-6">
+      Add team members and start the timer
+    </p>
 
-    <p class="text-gray-700">{{ members.length }} team members:</p>
-    <div class="mb-2">
-      <ul id="array-rendering" class="inline-block text-left">
-        <li v-for="item in members" :key="item">
+    <div class="flex mb-6 justify-evenly">
+      <div class="flex-1 text-right pr-6">
+        <div class="inline-flex items-center border-b border-teal-500 py-2">
+          <input
+            class="appearance-none bg-transparent border-none text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
+            type="text"
+            v-model="newMember"
+            v-on:keyup="validateEnter"
+            placeholder="Add member"
+            aria-label="Full name"
+          />
           <button
-            @click="deleteMember(item)"
-            class="text-sm text-red-500 text-bold"
+            @click="addNewMember"
+            class="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded"
+            type="button"
           >
-            X
+            Add
           </button>
-          {{ item }}
-        </li>
-      </ul>
+          <button
+            class="flex-shrink-0 border-transparent border-4 text-teal-500 hover:text-teal-800 text-sm py-1 px-2 rounded"
+            type="button"
+          >
+            Clear
+          </button>
+        </div>
+      </div>
+      <div class="flex-1 pl-6 text-left">
+        <div
+          class="bg-white shadow overflow-hidden sm:rounded-lg p-4 inline-flex flex-col"
+        >
+          <p class="text-gray-500 text-left">
+            {{ members.length }} team members:
+          </p>
+          <div class="mb-2 text-left">
+            <ul id="array-rendering" class="inline-block text-left">
+              <li v-for="item in members" :key="item">
+                <button
+                  @click="deleteMember(item)"
+                  class="text-sm text-red-500 text-bold"
+                >
+                  X
+                </button>
+                {{ item }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
 
     <button

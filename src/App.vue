@@ -1,17 +1,33 @@
 <template>
-  <div class="container mx-auto h-screen">
-    <ul id="nav" class="flex justify-center mt-2 mb-6">
-      <li class="mr-6">
-        <router-link class="text-blue-500 hover:text-blue-800" to="/"
-          >Home</router-link
-        >
-      </li>
-      <li>
-        <router-link class="text-blue-500 hover:text-blue-800" to="/timer"
-          >Timer</router-link
-        >
-      </li>
-    </ul>
-    <router-view />
+  <div class="main">
+    <div class="container mx-auto h-screen bg-gray-100">
+      <ul
+        id="nav"
+        class="flex justify-center pt-4 pb-4 mb-4 bg-white border-b border-gray-200"
+      >
+        <li class="mr-6">
+          <router-link class="text-blue-500 hover:text-blue-800 text-lg" to="/"
+            >Home</router-link
+          >
+        </li>
+        <li>
+          <router-link
+            class="text-blue-500 hover:text-blue-800 text-lg"
+            to="/timer"
+            >Timer</router-link
+          >
+        </li>
+      </ul>
+      <div>
+        <router-view />
+      </div>
+    </div>
   </div>
 </template>
+
+<style>
+.main {
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='105' viewBox='0 0 80 105'%3E%3Cg fill-rule='evenodd'%3E%3Cg id='death-star' fill='%23f7fafc' fill-opacity='1'%3E%3Cpath d='M20 10a5 5 0 0 1 10 0v50a5 5 0 0 1-10 0V10zm15 35a5 5 0 0 1 10 0v50a5 5 0 0 1-10 0V45zM20 75a5 5 0 0 1 10 0v20a5 5 0 0 1-10 0V75zm30-65a5 5 0 0 1 10 0v50a5 5 0 0 1-10 0V10zm0 65a5 5 0 0 1 10 0v20a5 5 0 0 1-10 0V75zM35 10a5 5 0 0 1 10 0v20a5 5 0 0 1-10 0V10zM5 45a5 5 0 0 1 10 0v50a5 5 0 0 1-10 0V45zm0-35a5 5 0 0 1 10 0v20a5 5 0 0 1-10 0V10zm60 35a5 5 0 0 1 10 0v50a5 5 0 0 1-10 0V45zm0-35a5 5 0 0 1 10 0v20a5 5 0 0 1-10 0V10z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+</style>
