@@ -1,23 +1,47 @@
 <template>
   <div class="timer flex">
     <div class="text-gray-700 w-1/5 pl-4">
-      <span class="font-bold text-black">Coming up next:</span>
-      <ul class="list-decimal pl-4">
-        <li v-for="(item, idx) in remainingMembers" :key="item">
-          {{ item }}<span v-if="idx == 0"> 👈</span>
-        </li>
-      </ul>
+      <div v-if="!postStandupDiscussion">
+        <span class="font-bold text-black">Coming up next:</span>
+        <ul class="list-decimal pl-4">
+          <li v-for="(item, idx) in remainingMembers" :key="item">
+            {{ item }}<span v-if="idx == 0"> 👈</span>
+          </li>
+        </ul>
+      </div>
     </div>
 
     <div class="text-center w-3/5">
       <div class="bg-white shadow overflow-hidden sm:rounded-lg py-4">
-        <div v-if="noMembers">
+        <div v-if="noMembers && !postStandupDiscussion">
           <span class="text-2xl">Add members to start using the timer</span>
         </div>
-        <div v-else>
-          <div class="flex flex-col" v-if="timerRunning">
+        <div v-else-if="!noMembers && !postStandupDiscussion">
+          <div class="flex flex-col items-center" v-if="timerRunning">
             <span class="text-gray-500">It's your turn:</span>
-            <span class="text-2xl">{{ currentMember }}</span>
+            <div>
+              <span class="text-2xl mr-1">{{ currentMember }}</span>
+              <button
+                class="text-gray-800 py-1 px-2 rounded"
+                :class="postStandupBtnClass"
+                @click="markForPostStandup"
+              >
+                <svg
+                  class="w-4 h-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+                  />
+                </svg>
+              </button>
+            </div>
           </div>
           <CountdownTimer
             v-if="timerRunning"
@@ -39,10 +63,50 @@
             :display-controls="false"
           ></CountdownTimer>
         </div>
+
+        <div v-if="postStandupDiscussion">
+          <span class="text-gray-500"
+            >The following team members has something to discuss:</span
+          >
+          <ul class="pl-4 list-disc mb-2 text-xl">
+            <li v-for="item in postStandupMembers" :key="item">
+              {{ item }}
+            </li>
+          </ul>
+          <button
+            class="bg-teal-500 hover:bg-teal-700 text-white py-1 px-2 rounded inline-flex items-center"
+            @click="clearPostStandup"
+          >
+            <svg
+              class="w-4 h-4 mr-2"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              />
+            </svg>
+            <span>Start over</span>
+          </button>
+        </div>
       </div>
       <div class="mt-6">
         <ThisIsFine></ThisIsFine>
       </div>
+    </div>
+
+    <div class="w-1/5 pl-4" v-if="!postStandupDiscussion">
+      <span class="font-bold text-black">Post-standup discussion:</span>
+      <ul class="pl-4 list-disc">
+        <li v-for="item in postStandupMembers" :key="item">
+          {{ item }}
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -81,7 +145,9 @@ export default {
     return {
       members: [],
       timerDuration: 90,
-      timerRunning: false
+      timerRunning: false,
+      postStandupMembers: [],
+      postStandupDiscussion: false
     };
   },
   computed: {
@@ -99,6 +165,16 @@ export default {
         return this.members.slice(1);
       }
       return [];
+    },
+    markedForPostStandup() {
+      return this.postStandupMembers.includes(this.currentMember);
+    },
+    postStandupBtnClass() {
+      if (this.markedForPostStandup) {
+        return "bg-green-300 hover:bg:green-400";
+      } else {
+        return "bg-gray-300 hover:bg-gray-400";
+      }
     }
   },
   created() {
@@ -123,15 +199,29 @@ export default {
     initialTimerFinished() {
       this.timerRunning = true;
     },
+    clearPostStandup() {
+      this.postStandupMembers = [];
+      this.postStandupDiscussion = false;
+      this.setupMembers();
+      this.$refs.countdownTimer.resetTime();
+    },
     timerFinishedHandler() {
       this.members.shift();
       if (this.members.length == 0) {
-        this.setupMembers();
-        this.$refs.countdownTimer.resetTime();
+        this.postStandupDiscussion = true;
         return;
       }
       if (this.members.length > 0 && this.$refs.countdownTimer) {
         this.$refs.countdownTimer.startCountdown();
+      }
+    },
+    markForPostStandup() {
+      if (this.postStandupMembers.includes(this.currentMember)) {
+        this.postStandupMembers = this.postStandupMembers.filter(
+          member => member != this.currentMember
+        );
+      } else {
+        this.postStandupMembers.push(this.currentMember);
       }
     }
   }
