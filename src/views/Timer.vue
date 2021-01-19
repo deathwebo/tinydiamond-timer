@@ -100,13 +100,24 @@
       </div>
     </div>
 
-    <div class="w-1/5 pl-4" v-if="!postStandupDiscussion">
-      <span class="font-bold text-black">Post-standup discussion:</span>
-      <ul class="pl-4 list-disc">
-        <li v-for="item in postStandupMembers" :key="item">
-          {{ item }}
-        </li>
-      </ul>
+    <div class="w-1/5 pl-4">
+      <div v-if="!postStandupDiscussion" class="mb-6">
+        <span class="font-bold text-black">Post-standup discussion:</span>
+        <ul class="pl-4 list-disc">
+          <li v-for="item in postStandupMembers" :key="item">
+            {{ item }}
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <span class="font-bold text-black">Finished:</span>
+        <ul class="pl-4 list-disc">
+          <li v-for="item in finishedMembers" :key="item">
+            {{ item.member }} - {{ timeInFormat(item.time) }}
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -147,7 +158,8 @@ export default {
       timerDuration: 90,
       timerRunning: false,
       postStandupMembers: [],
-      postStandupDiscussion: false
+      postStandupDiscussion: false,
+      finishedMembers: []
     };
   },
   computed: {
@@ -200,12 +212,23 @@ export default {
       this.timerRunning = true;
     },
     clearPostStandup() {
+      this.finishedMembers = [];
       this.postStandupMembers = [];
       this.postStandupDiscussion = false;
       this.setupMembers();
-      this.$refs.countdownTimer.resetTime();
+      if (this.$refs.countdownTimer) {
+        this.$refs.countdownTimer.resetTime();
+      }
     },
     timerFinishedHandler() {
+      if (this.$refs.countdownTimer) {
+        const finishedMember = {
+          member: this.currentMember,
+          time: this.timerDuration - this.$refs.countdownTimer.time
+        };
+        this.finishedMembers.push(finishedMember);
+      }
+
       this.members.shift();
       if (this.members.length == 0) {
         this.postStandupDiscussion = true;
@@ -223,6 +246,12 @@ export default {
       } else {
         this.postStandupMembers.push(this.currentMember);
       }
+    },
+    timeInFormat(time) {
+      const minutes = Math.floor(time / 60);
+      const secondsRaw = time - minutes * 60;
+      const seconds = secondsRaw.toString().padStart(2, "0");
+      return `${minutes}m${seconds}s`;
     }
   }
 };
