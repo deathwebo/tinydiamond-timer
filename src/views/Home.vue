@@ -71,6 +71,75 @@
       </div>
     </div>
 
+    <div class="mb-6 justify-evenly mb-6">
+      <p class="text-gray-700 text-xl mb-1">
+        Need to track a goal for your team ?
+      </p>
+      <p class="text-gray-500 text-sm mb-2">
+        Enable the setting and manually set the goal and current value input.
+      </p>
+      <div class="mb-2">
+        <button
+          @click="toggleTracker"
+          class="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded"
+          type="button"
+        >
+          {{ enableTracker ? "Disable" : "Enable" }}
+        </button>
+      </div>
+
+      <div v-if="enableTracker">
+        <div class="mb-1">
+          <span class="text-gray-500 mr-2">Tracker Name</span>
+          <input v-model="trackerName" class="appearance-none" />
+        </div>
+        <div class="mb-1">
+          <span class="text-gray-500 mr-2">Goal</span>
+          <input
+            v-model="trackerGoal"
+            type="number"
+            min="0"
+            class="appearance-none"
+          />
+        </div>
+        <div class="mb-1">
+          <span class="text-gray-500 mr-2">Current status/value</span>
+          <input
+            v-model="trackerCurrentValue"
+            type="number"
+            min="0"
+            class="appearance-none"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-6 justify-evenly mb-6">
+      <p class="text-gray-700 text-xl mb-1">
+        Set a sprint goal
+      </p>
+      <p class="text-gray-500 text-sm mb-2">
+        Sprint goal is going to be shown at the top of the timer for the team to
+        see.
+      </p>
+      <div class="mb-2">
+        <button
+          @click="toggleSprintGoal"
+          class="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded"
+          type="button"
+        >
+          {{ enableSprintGoal ? "Disable" : "Enable" }}
+        </button>
+      </div>
+
+      <div v-if="enableSprintGoal">
+        <div class="mb-1">
+          <span class="text-gray-500 mr-2">Sprint Goal</span>
+          <textarea v-model="sprintGoal" class="appearance-none" />
+        </div>
+      </div>
+    </div>
+
     <button
       @click="startTimer"
       class="bg-blue-500 hover:bg-blue-700 text-white text-sm py-2 px-4 rounded"
@@ -90,7 +159,12 @@ export default {
     return {
       newMember: "",
       members: [],
-      timerDuration: 90
+      timerDuration: 90,
+      enableTracker: false,
+      trackerGoal: 0,
+      trackerCurrentValue: 0,
+      trackerName: "",
+      enableSprintGoal: false
     };
   },
   computed: {
@@ -109,6 +183,30 @@ export default {
     }
   },
   created() {
+    const enableTracker = JSON.parse(
+      localStorage.getItem("enableTracker", false)
+    );
+    this.enableTracker = enableTracker;
+
+    const trackerGoal = parseInt(localStorage.getItem("trackerGoal", 0));
+    this.trackerGoal = trackerGoal;
+
+    const trackerName = localStorage.getItem("trackerName", "");
+    this.trackerName = trackerName;
+
+    const trackerCurrentValue = parseInt(
+      localStorage.getItem("trackerCurrentValue", 0)
+    );
+    this.trackerCurrentValue = trackerCurrentValue;
+
+    const enableSprintGoal = JSON.parse(
+      localStorage.getItem("enableSprintGoal", false)
+    );
+    this.enableSprintGoal = enableSprintGoal;
+
+    const sprintGoal = localStorage.getItem("sprintGoal", "");
+    this.sprintGoal = sprintGoal;
+
     const timerDuration = parseInt(localStorage.getItem("timerDuration"));
     if (Number.isInteger(timerDuration)) {
       this.timerDuration = timerDuration;
@@ -141,12 +239,33 @@ export default {
     startTimer() {
       localStorage.setItem("timerDuration", this.timerDuration);
       localStorage.setItem("members", this.members);
+      localStorage.setItem("trackerGoal", this.trackerGoal);
+      localStorage.setItem("trackerCurrentValue", this.trackerCurrentValue);
+      localStorage.setItem("trackerName", this.trackerName);
+      localStorage.setItem("sprintGoal", this.sprintGoal);
+
       this.$router.push("timer");
     },
     validateEnter(e) {
       if (e.keyCode === 13) {
         this.addNewMember();
       }
+    },
+    toggleTracker() {
+      if (this.enableTracker) {
+        this.enableTracker = false;
+      } else {
+        this.enableTracker = true;
+      }
+      localStorage.setItem("enableTracker", this.enableTracker);
+    },
+    toggleSprintGoal() {
+      if (this.enableSprintGoal) {
+        this.enableSprintGoal = false;
+      } else {
+        this.enableSprintGoal = true;
+      }
+      localStorage.setItem("enableSprintGoal", this.enableSprintGoal);
     }
   }
 };
