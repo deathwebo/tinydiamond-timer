@@ -36,7 +36,7 @@
           <span class="font-bold text-black">Coming up next:</span>
           <ul class="list-decimal pl-4">
             <li v-for="(item, idx) in remainingMembers" :key="item">
-              {{ item }}<span v-if="idx == 0"> 👈</span>
+              {{ item.name }}<span v-if="idx == 0"> 👈</span>
             </li>
           </ul>
         </div>
@@ -51,7 +51,7 @@
             <div class="flex flex-col items-center" v-if="timerRunning">
               <span class="text-gray-500">It's your turn:</span>
               <div>
-                <span class="text-2xl mr-1">{{ currentMember }}</span>
+                <span class="text-2xl mr-1">{{ currentMember.name }}</span>
                 <button
                   class="text-gray-800 py-1 px-2 rounded"
                   :class="postStandupBtnClass"
@@ -73,6 +73,9 @@
                   </svg>
                 </button>
               </div>
+              <div v-if="currentMember.avatar">
+                <img class="object-contain h-64 w-full" :src="currentMember.avatar" />
+              </div>
             </div>
             <CountdownTimer
               v-if="timerRunning"
@@ -84,7 +87,7 @@
             <div class="flex flex-col" v-if="!timerRunning">
               <span class="text-2xl font-hairline"
                 >Starting with
-                <span class="font-normal">{{ currentMember }}</span> in:</span
+                <span class="font-normal">{{ currentMember.name }}</span> in:</span
               >
             </div>
             <CountdownTimer
@@ -97,11 +100,11 @@
 
           <div v-if="postStandupDiscussion">
             <span class="text-gray-500"
-              >The following team members has something to discuss:</span
+              >The following team members have something to discuss:</span
             >
             <ul class="pl-4 list-disc mb-2 text-xl">
               <li v-for="item in postStandupMembers" :key="item">
-                {{ item }}
+                {{ item.name }}
               </li>
             </ul>
             <button
@@ -133,7 +136,7 @@
           <span class="font-bold text-black">Post-standup discussion:</span>
           <ul class="pl-4 list-disc">
             <li v-for="item in postStandupMembers" :key="item">
-              {{ item }}
+              {{ item.name }}
             </li>
           </ul>
         </div>
@@ -142,7 +145,7 @@
           <span class="font-bold text-black">Finished:</span>
           <ul class="pl-4 list-disc">
             <li v-for="item in finishedMembers" :key="item">
-              {{ item.member }} - {{ timeInFormat(item.time) }}
+              {{ item.member.name }} - {{ timeInFormat(item.time) }}
             </li>
           </ul>
         </div>
@@ -297,11 +300,7 @@ export default {
   },
   methods: {
     setupMembers() {
-      const membersStr = localStorage.getItem("members");
-      if (membersStr == null || membersStr == "") {
-        return;
-      }
-      const members = membersStr.split(",");
+      const members = JSON.parse(localStorage.getItem("members") || "[]");
       if (members.length > 0) {
         shuffle(members);
         this.members = members;

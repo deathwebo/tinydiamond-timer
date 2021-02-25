@@ -7,15 +7,27 @@
     <div class="flex mb-6 justify-evenly">
       <div class="flex-1 text-right pr-6">
         <div class="inline-flex flex-col">
-          <div class="items-center border-b py-2" :class="inputExtraClass">
+          <div class="flex flex-col py-2" :class="inputExtraClass">
             <input
-              class="appearance-none bg-transparent border-none text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
+              class="appearance-none border-none text-gray-700 mr-3 py-1 px-2 mb-2 leading-tight focus:outline-none"
               type="text"
               v-model="newMember"
               v-on:keyup="validateEnter"
-              placeholder="Add member"
+              placeholder="Member name"
               aria-label="Full name"
             />
+            <input
+              class="appearance-none border-none text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
+              type="text"
+              v-model="memberAvatar"
+              placeholder="Optional avatar link"
+              aria-label="Full name"
+            />
+            <p class="text-gray-500 text-sm mb-2 text-left">
+              (Optional) Use a link to an image to use as avatar.
+            </p>
+        </div>
+        <div class="text-center">
             <button
               @click="addNewMember"
               class="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded"
@@ -29,7 +41,7 @@
             >
               Clear
             </button>
-          </div>
+        </div>
           <p
             v-if="invalidCharacters"
             class="text-red-500 text-xs italic text-left mt-1"
@@ -38,7 +50,7 @@
           </p>
         </div>
         <div class="mt-4">
-          <span class="text-gray-500 mr-2">Duration per member in seconds</span>
+          <span class="text-gray-700 mr-2">Duration per member in seconds</span>
           <input
             v-model="timerDuration"
             type="number"
@@ -47,7 +59,7 @@
           />
         </div>
       </div>
-      <div class="flex-1 pl-6 text-left">
+      <div class="flex-1 pl-6 text-center">
         <div
           class="bg-white shadow overflow-hidden sm:rounded-lg p-4 inline-flex flex-col"
         >
@@ -63,7 +75,7 @@
                 >
                   X
                 </button>
-                {{ item }}
+                {{ item.name }}
               </li>
             </ul>
           </div>
@@ -158,6 +170,7 @@ export default {
   data() {
     return {
       newMember: "",
+      memberAvatar: "",
       members: [],
       timerDuration: 90,
       enableTracker: false,
@@ -212,11 +225,7 @@ export default {
       this.timerDuration = timerDuration;
     }
 
-    const membersStr = localStorage.getItem("members");
-    if (membersStr == "" || membersStr == null) {
-      return;
-    }
-    const members = membersStr.split(",");
+    const members = JSON.parse(localStorage.getItem("members") || "[]");
     if (members.length > 0) {
       this.members = members;
     }
@@ -228,17 +237,22 @@ export default {
         !this.invalidCharacters &&
         !this.members.includes(this.newMember)
       ) {
-        this.members = this.members.concat(this.newMember);
+        const member = {
+          name: this.newMember,
+          avatar: this.memberAvatar,
+        }
+        this.members = this.members.concat(member);
         this.newMember = "";
+        this.memberAvatar = "";
       }
     },
     deleteMember(member) {
-      const filteredMembers = this.members.filter(item => item !== member);
+      const filteredMembers = this.members.filter(item => item.name !== member.name);
       this.members = filteredMembers;
     },
     startTimer() {
       localStorage.setItem("timerDuration", this.timerDuration);
-      localStorage.setItem("members", this.members);
+      localStorage.setItem("members", JSON.stringify(this.members));
       localStorage.setItem("trackerGoal", this.trackerGoal);
       localStorage.setItem("trackerCurrentValue", this.trackerCurrentValue);
       localStorage.setItem("trackerName", this.trackerName);
